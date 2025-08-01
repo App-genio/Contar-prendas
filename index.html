@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Recepcion de Mercaderia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #EAEAE2;
+        }
+    </style>
+</head>
+<body class="bg-[#EAEAE2] min-h-screen flex flex-col items-center justify-center relative">
+    <!-- Barra de encabezado con el color y logo de Lukers -->
+    <header class="w-full text-white shadow-lg p-4 mb-4" style="background-color: rgb(0, 144, 255);">
+        <div class="max-w-4xl mx-auto flex items-center justify-center">
+            <h1 class="text-2xl font-bold">Registro de Recepcion de Mercaderia</h1>
+        </div>
+    </header>
+    
+    <div class="bg-white p-4 sm:p-8 rounded-2xl shadow-xl w-full max-w-4xl mb-4">
+        <!-- Contenedor del nombre de usuario y estado de autenticacion -->
+        <div class="flex flex-col sm:flex-row justify-between items-center mb-4 text-sm text-gray-600">
+            <div id="auth-status" class="flex items-center gap-2">
+                <span class="text-xs">Estado de autenticacion: <span id="auth-state" class="font-bold">Cargando...</span></span>
+            </div>
+            <div>
+                <span class="text-xs">ID de Usuario: <span id="user-id" class="font-bold">Cargando...</span></span>
+            </div>
+        </div>
+        
+        <!-- Formulario principal para detalles del producto -->
+        <form id="reception-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+            <!-- Campos para usuario y codigo de importacion -->
+            <div class="flex flex-col col-span-full md:col-span-2">
+                <label for="user-name" class="text-sm font-medium text-gray-700 mb-1">Usuario que Registra</label>
+                <input type="text" id="user-name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ej: Juan Perez" required>
+            </div>
+            <div class="flex flex-col col-span-full md:col-span-3">
+                <label for="import-code" class="text-sm font-medium text-gray-700 mb-1">Codigo Importacion</label>
+                <input type="text" id="import-code" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ej: IMP-2023-001" required>
+            </div>
+
+            <!-- Campos de informacion general -->
+            <div class="flex flex-col">
+                <label for="parihuela" class="text-sm font-medium text-gray-700 mb-1">Parihuela</label>
+                <input type="text" id="parihuela" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ej: P001" required>
+            </div>
+            <div class="flex flex-col">
+                <label for="caja" class="text-sm font-medium text-gray-700 mb-1">Caja</label>
+                <input type="text" id="caja" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ej: C123" required>
+            </div>
+            <div class="flex flex-col">
+                <label for="descripcion" class="text-sm font-medium text-gray-700 mb-1">Descripcion</label>
+                <input type="text" id="descripcion" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ej: Camiseta" required>
+            </div>
+            <!-- Menu desplegable para Genero -->
+            <div class="flex flex-col">
+                <label for="genero-select" class="text-sm font-medium text-gray-700 mb-1">Genero</label>
+                <select id="genero-select" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <option value="" disabled selected>Selecciona una opcion</option>
+                    <option value="Mujer">Mujer</option>
+                    <option value="Hombre">Hombre</option>
+                    <option value="Nino">Nino</option>
+                    <option value="Nina">Nina</option>
+                    <option value="Jovencito">Jovencito</option>
+                    <option value="Jovencita">Jovencita</option>
+                    <option value="Bebe">Bebe</option>
+                    <option value="Otros">Otros</option>
+                </select>
+            </div>
+            <div class="flex flex-col">
+                <label for="marca" class="text-sm font-medium text-gray-700 mb-1">Marca</label>
+                <input type="text" id="marca" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ej: Lukers" required>
+            </div>
+            <!-- Menu desplegable para Mundo -->
+            <div class="flex flex-col">
+                <label for="mundo-select" class="text-sm font-medium text-gray-700 mb-1">Mundo</label>
+                <select id="mundo-select" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <option value="" disabled selected>Selecciona una opcion</option>
+                    <option value="Urbano">Urbano</option>
+                    <option value="Casual">Casual</option>
+                    <option value="Deportivo">Deportivo</option>
+                    <option value="Formal">Formal</option>
+                    <option value="RI">RI</option>
+                </select>
+            </div>
+            
+            <!-- Contenedor para agregar tallas y cantidades -->
+            <div class="lg:col-span-3 flex flex-col mt-4">
+                <h2 class="text-lg font-semibold text-gray-800 mb-2">Agregar Tallas y Cantidades</h2>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    <div class="flex flex-col">
+                        <label for="talla-input" class="text-sm font-medium text-gray-700 mb-1">Talla</label>
+                        <input type="text" id="talla-input" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ej: M">
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="cantidad-input" class="text-sm font-medium text-gray-700 mb-1">Cantidad</label>
+                        <input type="number" id="cantidad-input" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Ej: 100" min="0">
+                    </div>
+                    <div class="flex items-end">
+                        <button id="add-talla-button" type="button" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out">
+                            Anadir Talla
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Previsualizacion de tallas anadidas -->
+            <div class="lg:col-span-2 flex flex-col mt-4">
+                <h2 class="text-lg font-semibold text-gray-800 mb-2">Tallas Anadidas</h2>
+                <div class="bg-gray-50 p-3 rounded-lg overflow-y-auto max-h-32">
+                    <ul id="tallas-list" class="space-y-1 text-sm text-gray-700">
+                        <!-- Las tallas anadidas se mostraran aqui -->
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Botones de accion principales -->
+            <div class="col-span-full flex flex-col sm:flex-row justify-end gap-2 mt-4">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-300 ease-in-out">
+                    Guardar Ingreso
+                </button>
+                <button id="export-excel-button" type="button" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-300 ease-in-out">
+                    Exportar a Excel
+                </button>
+                <button id="clear-all-button" type="button" class="bg-gray-400 hover:bg-gray-500 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-300 ease-in-out">
+                    Borrar Todo
+                </button>
+            </div>
+        </form>
+        
+        <!-- Tabla principal para mostrar el conteo -->
+        <div class="overflow-x-auto rounded-xl shadow-lg border border-gray-200 mt-8">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                            Correlativo
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                            Usuario
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                            Codigo Importacion
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                            Parihuela
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                            Caja
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                            Descripcion
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                            Genero
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                            Marca
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                            Mundo
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                            Talla
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                            Cantidad
+                        </th>
+                        <th scope="col" class="relative px-6 py-3">
+                            <span class="sr-only">Borrar</span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="reception-table-body" class="bg-white divide-y divide-gray-200">
+                    <!-- Las filas se insertaran aqui dinamicamente -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Logo de Lukers en la esquina inferior derecha -->
+    <div class="absolute bottom-4 right-4">
+        <img src="https://www.lukers.pe/arquivos/logo325x117.png?v=638617958543700000" alt="Logo de Lukers" class="h-12 opacity-50">
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, deleteDoc, doc, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Configuración de tu proyecto de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBqn0WsvS3QcYm2J7xhix6rt18Yb25X-1o",
+            authDomain: "conteo-lukers.firebaseapp.com",
+            projectId: "conteo-lukers",
+            storageBucket: "conteo-lukers.firebasestorage.app",
+            messagingSenderId: "558356896255",
+            appId: "1:558356896255:web:f9fd7f6053e86224ad6fca",
+            measurementId: "G-4PC6E826NM"
+        };
+        const appId = firebaseConfig.appId;
+        const initialAuthToken = null;
+
+        let db;
+        let auth;
+        let unsubscribeFromFirestore = null;
+        let correlativoCounter = 1;
+
+        // Autenticacion e inicializacion de Firebase
+        async function initializeAndAuthenticate() {
+            try {
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                
+                document.getElementById('auth-state').textContent = 'Conectando...';
+
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        const userId = user.uid;
+                        document.getElementById('auth-state').textContent = 'Conectado';
+                        document.getElementById('user-id').textContent = userId;
+                        console.log("Usuario autenticado con ID:", userId);
+
+                        // Cancelar suscripcion anterior si existe
+                        if (unsubscribeFromFirestore) {
+                            unsubscribeFromFirestore();
+                        }
+                        
+                        // Cargar datos al iniciar y escuchar en tiempo real
+                        loadDataAndListen();
+                    } else {
+                        document.getElementById('auth-state').textContent = 'Desconectado';
+                        document.getElementById('user-id').textContent = 'N/A';
+                        console.log("Usuario desconectado");
+                    }
+                });
+
+            } catch (error) {
+                console.error("Error al inicializar Firebase o autenticar:", error);
+                document.getElementById('auth-state').textContent = 'Error';
+                showModal("Error al conectar con la base de datos.");
+            }
+        }
+        
+        // Cargar datos de Firestore y actualizar la tabla en tiempo real
+        function loadDataAndListen() {
+            if (!auth || !auth.currentUser) {
+                console.warn("No hay usuario autenticado. No se pueden cargar los datos de Firestore.");
+                return;
+            }
+            const userId = auth.currentUser.uid;
+            const collectionName = 'reception_records';
+            const receptionCollection = collection(db, `artifacts/${appId}/users/${userId}/${collectionName}`);
+            
+            // Usar onSnapshot para escuchar los cambios en tiempo real
+            unsubscribeFromFirestore = onSnapshot(receptionCollection, (querySnapshot) => {
+                const tableBody = document.getElementById('reception-table-body');
+                tableBody.innerHTML = ''; // Limpiar la tabla antes de renderizar
+                correlativoCounter = 1;
+
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const newRow = document.createElement('tr');
+                    newRow.classList.add('hover:bg-gray-50');
+                    newRow.setAttribute('data-doc-id', doc.id); // Almacenar el ID del documento
+                    
+                    newRow.innerHTML = `
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${correlativoCounter}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${data.userName}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${data.importCode}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${data.parihuela}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${data.caja}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${data.descripcion}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${data.genero}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${data.marca}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${data.mundo}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${data.talla}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${data.cantidad}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <button type="button" data-doc-id="${doc.id}" class="delete-row-button text-red-500 hover:text-red-700 font-bold">X</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(newRow);
+                    correlativoCounter++;
+                });
+            }, (error) => {
+                console.error("Error al obtener datos de Firestore:", error);
+                showModal("Error al cargar los datos.");
+            });
+        }
+
+        // Llamar a la funcion de inicializacion
+        initializeAndAuthenticate();
+
+        // Array para almacenar temporalmente las tallas y cantidades
+        let tallasTemp = [];
+
+        // Funcion para renderizar la lista de tallas anadidas temporalmente
+        function renderTallasList() {
+            const tallasList = document.getElementById('tallas-list');
+            tallasList.innerHTML = '';
+            tallasTemp.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.classList.add('flex', 'justify-between', 'items-center', 'py-1');
+                li.innerHTML = `
+                    <span>Talla: ${item.talla}, Cantidad: ${item.cantidad}</span>
+                    <button type="button" data-index="${index}" class="remove-talla-button text-red-500 hover:text-red-700 transition duration-150 ease-in-out font-bold px-2 rounded-full">
+                        X
+                    </button>
+                `;
+                tallasList.appendChild(li);
+            });
+            
+            // Agregar event listeners a los nuevos botones de eliminacion
+            document.querySelectorAll('.remove-talla-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'), 10);
+                    tallasTemp.splice(index, 1);
+                    renderTallasList();
+                });
+            });
+        }
+        
+        // Maneja el clic en el boton "Anadir Talla"
+        document.getElementById('add-talla-button').addEventListener('click', function() {
+            const tallaInput = document.getElementById('talla-input');
+            const cantidadInput = document.getElementById('cantidad-input');
+            
+            const talla = tallaInput.value.trim();
+            const cantidad = parseInt(cantidadInput.value, 10);
+
+            if (talla && !isNaN(cantidad) && cantidad > 0) {
+                tallasTemp.push({ talla: talla, cantidad: cantidad });
+                renderTallasList();
+                tallaInput.value = '';
+                cantidadInput.value = '';
+            } else {
+                showModal("Por favor, introduce una talla y una cantidad valida.");
+            }
+        });
+
+        // Maneja el envio del formulario para agregar un nuevo ingreso
+        document.getElementById('reception-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            if (tallasTemp.length === 0) {
+                showModal("Debes anadir al menos una talla y cantidad antes de guardar.");
+                return;
+            }
+
+            // Obtener los valores del formulario
+            const userName = document.getElementById('user-name').value;
+            const importCode = document.getElementById('import-code').value;
+            const parihuela = document.getElementById('parihuela').value;
+            const caja = document.getElementById('caja').value;
+            const descripcion = document.getElementById('descripcion').value;
+            const genero = document.getElementById('genero-select').value;
+            const marca = document.getElementById('marca').value;
+            const mundo = document.getElementById('mundo-select').value;
+
+            try {
+                if (!auth || !auth.currentUser) {
+                    showModal("Error de autenticacion. Por favor, recarga la página.");
+                    return;
+                }
+                const userId = auth.currentUser.uid;
+                const collectionName = 'reception_records';
+                const receptionCollection = collection(db, `artifacts/${appId}/users/${userId}/${collectionName}`);
+                
+                for (const item of tallasTemp) {
+                    await addDoc(receptionCollection, {
+                        userName,
+                        importCode,
+                        parihuela,
+                        caja,
+                        descripcion,
+                        genero,
+                        marca,
+                        mundo,
+                        talla: item.talla,
+                        cantidad: item.cantidad,
+                    });
+                }
+                
+                document.getElementById('reception-form').reset();
+                document.getElementById('user-name').value = userName;
+                document.getElementById('import-code').value = importCode;
+                document.getElementById('genero-select').value = '';
+                document.getElementById('mundo-select').value = '';
+                tallasTemp = [];
+                renderTallasList();
+                showModal("¡Ingreso guardado exitosamente!");
+
+            } catch (error) {
+                console.error("Error al guardar el ingreso:", error);
+                showModal("Error al guardar el ingreso. Por favor, intenta de nuevo.");
+            }
+        });
+
+        // Maneja el clic en el boton de exportar a Excel
+        document.getElementById('export-excel-button').addEventListener('click', function() {
+            const headers = Array.from(document.querySelectorAll('table thead th:not(:last-child)'))
+                .map(th => `"${th.innerText.trim()}"`)
+                .join(',');
+            
+            const rows = document.getElementById('reception-table-body').querySelectorAll('tr');
+            
+            const csvRows = Array.from(rows).map(row => {
+                const cells = Array.from(row.querySelectorAll('td:not(:last-child)'));
+                return cells.map(cell => `"${cell.innerText.replace(/"/g, '""')}"`).join(','); 
+            });
+
+            const csvContent = [headers, ...csvRows].join('\n');
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'registro_mercadera.csv');
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
+        // Delegacion de eventos para los botones de eliminacion de filas
+        document.getElementById('reception-table-body').addEventListener('click', async function(event) {
+            if (event.target.classList.contains('delete-row-button')) {
+                const row = event.target.closest('tr');
+                const docId = row.getAttribute('data-doc-id');
+                
+                showConfirmModal("¿Estas seguro de que quieres borrar esta entrada?", async function() {
+                    try {
+                        const userId = auth.currentUser.uid;
+                        const collectionName = 'reception_records';
+                        const docRef = doc(db, `artifacts/${appId}/users/${userId}/${collectionName}`, docId);
+                        await deleteDoc(docRef);
+                    } catch (error) {
+                        console.error("Error al borrar el documento:", error);
+                        showModal("Hubo un error al borrar la entrada.");
+                    }
+                });
+            }
+        });
+
+        // Maneja el clic en el botón "Borrar Todo"
+        document.getElementById('clear-all-button').addEventListener('click', function() {
+            showConfirmModal("¿Estás seguro de que quieres borrar todas las entradas?", async function() {
+                try {
+                    const userId = auth.currentUser.uid;
+                    const collectionName = 'reception_records';
+                    const q = collection(db, `artifacts/${appId}/users/${userId}/${collectionName}`);
+                    const querySnapshot = await getDocs(q);
+                    const deletePromises = [];
+                    querySnapshot.forEach((docToDelete) => {
+                        deletePromises.push(deleteDoc(doc(db, `artifacts/${appId}/users/${userId}/${collectionName}`, docToDelete.id)));
+                    });
+                    await Promise.all(deletePromises);
+                } catch (error) {
+                    console.error("Error al borrar todos los documentos:", error);
+                    showModal("Hubo un error al borrar todas las entradas.");
+                }
+            });
+        });
+
+        // Funcion para mostrar un modal de alerta personalizado
+        function showModal(message) {
+            const modalHtml = `
+                <div id="custom-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
+                    <div class="bg-white p-6 rounded-lg shadow-xl m-4 max-w-sm">
+                        <p class="text-lg font-semibold text-gray-800">${message}</p>
+                        <div class="mt-4 text-right">
+                            <button onclick="document.getElementById('custom-modal').remove()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out">
+                                Aceptar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+        }
+
+        // Funcion para mostrar un modal de confirmacion personalizado
+        function showConfirmModal(message, onConfirm) {
+            const modalHtml = `
+                <div id="custom-confirm-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
+                    <div class="bg-white p-6 rounded-lg shadow-xl m-4 max-w-sm">
+                        <p class="text-lg font-semibold text-gray-800">${message}</p>
+                        <div class="mt-4 text-right space-x-2">
+                            <button id="cancel-button" class="bg-gray-400 hover:bg-gray-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out">
+                                Cancelar
+                            </button>
+                            <button id="confirm-button" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out">
+                                Borrar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+            document.getElementById('confirm-button').addEventListener('click', function() {
+                onConfirm();
+                document.getElementById('custom-confirm-modal').remove();
+            });
+
+            document.getElementById('cancel-button').addEventListener('click', function() {
+                document.getElementById('custom-confirm-modal').remove();
+            });
+        }
+    </script>
+</body>
+</html>
