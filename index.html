@@ -12,7 +12,7 @@
         }
     </style>
 </head>
-<body class="bg-[#EAEAE2] min-h-screen flex flex-col items-center justify-center relative">
+<body class="bg-[#EAEAE2] min-h-screen flex flex-col items-center">
     <!-- Barra de encabezado con el color y logo de Lukers -->
     <header class="w-full text-white shadow-lg p-4 mb-4" style="background-color: rgb(0, 144, 255);">
         <div class="max-w-4xl mx-auto flex items-center justify-center">
@@ -20,7 +20,7 @@
         </div>
     </header>
     
-    <div class="bg-white p-4 sm:p-8 rounded-2xl shadow-xl w-full max-w-4xl mb-4">
+    <div class="bg-white p-4 sm:p-8 rounded-2xl shadow-xl w-full max-w-4xl mb-4 flex-grow">
         <!-- Contenedor del nombre de usuario y estado de autenticacion -->
         <div class="flex flex-col sm:flex-row justify-between items-center mb-4 text-sm text-gray-600">
             <div id="auth-status" class="flex items-center gap-2">
@@ -182,9 +182,9 @@
         </div>
     </div>
     
-    <!-- Logo de Lukers en la esquina inferior derecha -->
-    <div class="absolute bottom-4 right-4">
-        <img src="https://www.lukers.pe/arquivos/logo325x117.png?v=638617958543700000" alt="Logo de Lukers" class="h-12 opacity-50">
+    <!-- Contenedor del logo en la parte inferior, debajo de todo el contenido -->
+    <div class="w-full max-w-4xl mt-8 mb-4 px-4">
+        <img src="https://www.lukers.pe/arquivos/logo325x117.png?v=638617958543700000" alt="Logo de Lukers" class="h-12 opacity-50 float-right">
     </div>
 
     <script type="module">
@@ -192,7 +192,6 @@
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, query, deleteDoc, doc, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Configuración de tu proyecto de Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyBqn0WsvS3QcYm2J7xhix6rt18Yb25X-1o",
             authDomain: "conteo-lukers.firebaseapp.com",
@@ -210,7 +209,6 @@
         let unsubscribeFromFirestore = null;
         let correlativoCounter = 1;
 
-        // Autenticacion e inicializacion de Firebase
         async function initializeAndAuthenticate() {
             try {
                 const app = initializeApp(firebaseConfig);
@@ -232,12 +230,10 @@
                         document.getElementById('user-id').textContent = userId;
                         console.log("Usuario autenticado con ID:", userId);
 
-                        // Cancelar suscripcion anterior si existe
                         if (unsubscribeFromFirestore) {
                             unsubscribeFromFirestore();
                         }
                         
-                        // Cargar datos al iniciar y escuchar en tiempo real
                         loadDataAndListen();
                     } else {
                         document.getElementById('auth-state').textContent = 'Desconectado';
@@ -253,7 +249,6 @@
             }
         }
         
-        // Cargar datos de Firestore y actualizar la tabla en tiempo real
         function loadDataAndListen() {
             if (!auth || !auth.currentUser) {
                 console.warn("No hay usuario autenticado. No se pueden cargar los datos de Firestore.");
@@ -263,17 +258,16 @@
             const collectionName = 'reception_records';
             const receptionCollection = collection(db, `artifacts/${appId}/users/${userId}/${collectionName}`);
             
-            // Usar onSnapshot para escuchar los cambios en tiempo real
             unsubscribeFromFirestore = onSnapshot(receptionCollection, (querySnapshot) => {
                 const tableBody = document.getElementById('reception-table-body');
-                tableBody.innerHTML = ''; // Limpiar la tabla antes de renderizar
+                tableBody.innerHTML = ''; 
                 correlativoCounter = 1;
 
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
                     const newRow = document.createElement('tr');
                     newRow.classList.add('hover:bg-gray-50');
-                    newRow.setAttribute('data-doc-id', doc.id); // Almacenar el ID del documento
+                    newRow.setAttribute('data-doc-id', doc.id); 
                     
                     newRow.innerHTML = `
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${correlativoCounter}</td>
@@ -300,13 +294,10 @@
             });
         }
 
-        // Llamar a la funcion de inicializacion
         initializeAndAuthenticate();
 
-        // Array para almacenar temporalmente las tallas y cantidades
         let tallasTemp = [];
 
-        // Funcion para renderizar la lista de tallas anadidas temporalmente
         function renderTallasList() {
             const tallasList = document.getElementById('tallas-list');
             tallasList.innerHTML = '';
@@ -322,7 +313,6 @@
                 tallasList.appendChild(li);
             });
             
-            // Agregar event listeners a los nuevos botones de eliminacion
             document.querySelectorAll('.remove-talla-button').forEach(button => {
                 button.addEventListener('click', function() {
                     const index = parseInt(this.getAttribute('data-index'), 10);
@@ -332,7 +322,6 @@
             });
         }
         
-        // Maneja el clic en el boton "Anadir Talla"
         document.getElementById('add-talla-button').addEventListener('click', function() {
             const tallaInput = document.getElementById('talla-input');
             const cantidadInput = document.getElementById('cantidad-input');
@@ -350,7 +339,6 @@
             }
         });
 
-        // Maneja el envio del formulario para agregar un nuevo ingreso
         document.getElementById('reception-form').addEventListener('submit', async function(event) {
             event.preventDefault();
 
@@ -359,7 +347,6 @@
                 return;
             }
 
-            // Obtener los valores del formulario
             const userName = document.getElementById('user-name').value;
             const importCode = document.getElementById('import-code').value;
             const parihuela = document.getElementById('parihuela').value;
@@ -371,7 +358,7 @@
 
             try {
                 if (!auth || !auth.currentUser) {
-                    showModal("Error de autenticacion. Por favor, recarga la página.");
+                    showModal("Error de autenticacion. Por favor, recarga la pagina.");
                     return;
                 }
                 const userId = auth.currentUser.uid;
@@ -408,7 +395,6 @@
             }
         });
 
-        // Maneja el clic en el boton de exportar a Excel
         document.getElementById('export-excel-button').addEventListener('click', function() {
             const headers = Array.from(document.querySelectorAll('table thead th:not(:last-child)'))
                 .map(th => `"${th.innerText.trim()}"`)
@@ -436,7 +422,6 @@
             document.body.removeChild(link);
         });
 
-        // Delegacion de eventos para los botones de eliminacion de filas
         document.getElementById('reception-table-body').addEventListener('click', async function(event) {
             if (event.target.classList.contains('delete-row-button')) {
                 const row = event.target.closest('tr');
@@ -456,7 +441,6 @@
             }
         });
 
-        // Maneja el clic en el botón "Borrar Todo"
         document.getElementById('clear-all-button').addEventListener('click', function() {
             showConfirmModal("¿Estás seguro de que quieres borrar todas las entradas?", async function() {
                 try {
@@ -476,7 +460,6 @@
             });
         });
 
-        // Funcion para mostrar un modal de alerta personalizado
         function showModal(message) {
             const modalHtml = `
                 <div id="custom-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
@@ -493,7 +476,6 @@
             document.body.insertAdjacentHTML('beforeend', modalHtml);
         }
 
-        // Funcion para mostrar un modal de confirmacion personalizado
         function showConfirmModal(message, onConfirm) {
             const modalHtml = `
                 <div id="custom-confirm-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
